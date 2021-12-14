@@ -964,15 +964,17 @@ export class UI {
 				}
 			});
 
-			const summonedOrDead = game.players[player].creatures.some(
-				(creature) => creature.type == creatureType,
-			);
+			let summonedOrDead = false;
+			game.players[player].creatures.forEach((creature) => {
+				if (creature.type == creatureType) {
+					summonedOrDead = true;
+				}
+			});
 
 			this.materializeButton.changeState(ButtonStateEnum.disabled);
 			$j('#card .sideA').addClass('disabled').off('click');
 
 			let activeCreature = game.activeCreature;
-
 			if (activeCreature.player.getNbrOfCreatures() > game.creaLimitNbr) {
 				$j('#materialize_button p').text(game.msg.ui.dash.materializeOverload);
 			} else if (
@@ -1055,9 +1057,7 @@ export class UI {
 					player == game.activeCreature.player.id &&
 					(clickMethod == 'emptyHex' || clickMethod == 'portrait' || clickMethod == 'grid')
 				) {
-					if (summonedOrDead) {
-						$j('#materialize_button').hide();
-					} else if (clickMethod == 'portrait' && creatureType != '--') {
+					if (clickMethod == 'portrait' && creatureType != '--') {
 						$j('#materialize_button').hide();
 					} else {
 						$j('#materialize_button p').text(game.msg.ui.dash.materializeUsed);
